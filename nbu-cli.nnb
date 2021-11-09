@@ -1,0 +1,95 @@
+{
+    "cells": [
+        {
+            "language": "javascript",
+            "source": [
+                "const NBU = require('./src');\r\nconst nbu = await NBU({ bin: 'd:/veritas/netbackup/bin' });\r\nconsole.log(nbu.masterServer);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const isRunning = await nbu.isRunning();\r\nconsole.log(isRunning);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const credentials = { domain: 'SEC', user: 'jbrabec', password: '*' };\r\nconst login = await nbu.login(credentials);\r\nconsole.log(login);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const whoami = await nbu.whoami();\r\nconsole.log(whoami);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const isloggedin = await nbu.isLoggedIn(credentials);\r\nconsole.log(isloggedin);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const logout = await nbu.logout();\r\nconsole.log(logout);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const clients = await nbu.clients();\r\nconsole.log('Client 1 /', clients.length, clients[0] );"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const jobs = await nbu.jobs();\r\nconsole.log('Job 1 /', jobs.length, jobs[0] );"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const policies = await nbu.policies();\r\nconsole.log('Policy 1 /', policies.length, policies[0] );"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const retentionLevels = await nbu.retentionLevels();\r\nconsole.log('RetentionLevel 1 /', retentionLevels.length, retentionLevels[0] );"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const services = await nbu.services();\r\nconsole.log('Service 1 /', services.length, services[0] );"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const slps = await nbu.slps();\r\nconsole.log('SLP 1 /', slps.length, slps[0] );"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const summary = await nbu.summary();\r\nconsole.log('Summary', summary );"
+            ],
+            "outputs": []
+        }
+    ]
+}
