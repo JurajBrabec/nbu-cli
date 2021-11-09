@@ -32,12 +32,10 @@ module.exports.SLPs = {
   split: (text, split) => {
     if (text.match(/no entity vas found/)) return false;
     const lines = text.split(/\r?\n/);
-    return split(
-      lines
-        .slice(1)
-        .map((item) => [lines[0], item.trim()].join(' '))
-        .join('\n')
-    );
+    return lines
+      .slice(1)
+      .map((item) => [lines[0], item.trim()].join(' '))
+      .map(split);
   },
   assign: (values, assign) => {
     const row = assign(values);
