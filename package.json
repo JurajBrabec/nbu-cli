@@ -4,9 +4,11 @@
   "description": "NetBackup CLI Interface",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "esbuild ./src/index.js --bundle --minify --platform=node --outfile=./dist/nbu-cli.js",
+    "test": "jest"
   },
   "author": "Juraj Brabec",
+  "homepage": "https://github.com/JurajBrabec/nbu-cli",
   "license": "ISC",
   "devDependencies": {
     "esbuild": "^0.13.13",
