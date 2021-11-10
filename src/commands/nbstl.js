@@ -30,7 +30,7 @@ module.exports.SLPs = {
     targetMasterSlp: 'string',
   },
   split: (text, split) => {
-    if (text.match(/no entity vas found/)) return false;
+    if (text.match(/no entity was found/)) return false;
     const lines = text.split(/\r?\n/);
     return lines
       .slice(1)
