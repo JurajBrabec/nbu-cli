@@ -1,5 +1,6 @@
 const { Parser } = require('../lib/parsedFileOutput');
 const { Login, Logout, Whoami } = require('../src/commands/bpnbat.js');
+const { value } = require('../src/helpers');
 
 const LOGIN_TEXT = `Operation completed successfully.`;
 const LOGIN_RESULT = `{"output":"Operation completed successfully."}`;
@@ -16,6 +17,7 @@ const WHOAMI_RESULT = `{"type":"Web","name":"johndoe","domain":"ACME","issuer":"
 describe('BPNBAT', () => {
   describe('Login', () => {
     it('should parse Login object', () => {
+      Login.cast = value.cast;
       const parser = Parser(Login);
       const result = parser(LOGIN_TEXT);
       expect(result).toEqual(JSON.parse(LOGIN_RESULT));
@@ -23,6 +25,7 @@ describe('BPNBAT', () => {
   });
   describe('Logout', () => {
     it('should parse Logout object', () => {
+      Logout.cast = value.cast;
       const parser = Parser(Logout);
       const result = parser(LOGIN_TEXT);
       expect(result).toEqual(JSON.parse(LOGIN_RESULT));
@@ -30,6 +33,7 @@ describe('BPNBAT', () => {
   });
   describe('Whoami', () => {
     it('should parse Whoami object', () => {
+      Whoami.cast = value.cast;
       const parser = Parser(Whoami);
       const result = parser(WHOAMI_TEXT);
       expect(result).toEqual(JSON.parse(WHOAMI_RESULT));
