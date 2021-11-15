@@ -84,7 +84,7 @@ module.exports.Jobs = {
     ftUsage: 'number',
     reasonString: { type: 'string', maxLength: 128 },
     dedupRatio: 'float',
-    accelerator: 'number',
+    accelerator: 'float',
     instanceDbName: 'string',
     rest1: 'string',
     rest2: 'string',
