@@ -15,6 +15,7 @@ const { Policies } = require('./commands/bppllist.js');
 const { RetentionLevels } = require('./commands/bpretlevel.js');
 const { SLPs } = require('./commands/nbstl.js');
 const { Services } = require('./commands/bpps.js');
+const { ClientConfig } = require('./commands/bpgetconfig.js');
 
 const CACHE = {
   clients: 1000 * 60 * 1,
@@ -24,6 +25,7 @@ const CACHE = {
   services: 1000 * 1,
   slps: 1000 * 1,
   summary: 1000 * 1,
+  version: 1000 * 60 * 1,
   whoami: 1000 * 1,
 };
 
@@ -52,6 +54,14 @@ class NbuCli {
   }
   async clients() {
     return cached.set('clients', () => this.#get(Clients), CACHE.clients);
+  }
+  async config({ client } = {}) {
+    const args = [client || this.masterServer];
+    return cached.set(
+      'config',
+      () => this.#get(ClientConfig, { args }),
+      CACHE.config
+    );
   }
   async isLoggedIn({ domain, user, type }) {
     await this.whoami();

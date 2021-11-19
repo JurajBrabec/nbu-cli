@@ -6,6 +6,8 @@ async function main() {
     const nbu = await NBU({ bin: 'd:/veritas/netbackup/bin' });
     console.log(nbu.masterServer);
     let result;
+    result = await nbu.config();
+    console.log('Config', result);
     result = await nbu.clients();
     console.log('Client 1 /', result.length, result[0]);
     result = await nbu.jobs();
