@@ -13,4 +13,5 @@ module.exports.ClientConfig = {
     installationPath: 'string',
     os: 'string',
   },
+  split: (text, split) => (text.match(/;/) ? split(text) : [text]),
 };
