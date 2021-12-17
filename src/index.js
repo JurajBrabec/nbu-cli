@@ -1,5 +1,5 @@
 const path = require('path');
-const cached = require('../lib/cached.js');
+const Cached = require('../lib/cached.js');
 const { ParsedFileOutput, Parser } = require('../lib/parsedFileOutput');
 const {
   NBUDateTime,
@@ -17,7 +17,7 @@ const { SLPs } = require('./commands/nbstl.js');
 const { Services } = require('./commands/bpps.js');
 const { ClientConfig } = require('./commands/bpgetconfig.js');
 
-const CACHE = {
+const CACHE_AGE = {
   clients: 1000 * 60 * 1,
   jobs: 1000 * 1,
   policies: 1000 * 60 * 1,
@@ -35,6 +35,7 @@ class NbuCli {
   constructor({ bin = './' } = {}) {
     this.bin = bin;
     this.masterServer = null;
+    this.cached = Cached.depot('NbuCli');
   }
   async #get(command, params = {}) {
     command.cast = value.cast;
@@ -53,14 +54,18 @@ class NbuCli {
     return execute(params.args).asArray();
   }
   async clients() {
-    return cached.set('clients', () => this.#get(Clients), CACHE.clients);
+    return this.cached.set(
+      'clients',
+      () => this.#get(Clients),
+      CACHE_AGE.clients
+    );
   }
   async config({ client } = {}) {
     const args = [client || this.masterServer];
-    return cached.set(
+    return this.cached.set(
       'config',
       () => this.#get(ClientConfig, { args }),
-      CACHE.config
+      CACHE_AGE.config
     );
   }
   async isLoggedIn({ domain, user, type }) {
@@ -71,12 +76,15 @@ class NbuCli {
     await this.services();
     return isRunning(params);
   }
-  async jobs({ client, daysBack } = {}) {
+  async jobs({ daysBack } = {}) {
     await this.retentionLevels();
     const args = [];
-    if (client) args.push('-client', client);
     if (daysBack) args.push('-t', NBUDateTime(-daysBack * 24 * 60 * 60 * 1000));
-    return cached.set('jobs', () => this.#get(Jobs, { args }), CACHE.jobs);
+    return this.cached.set(
+      'jobs',
+      () => this.#get(Jobs, { args }),
+      CACHE_AGE.jobs
+    );
   }
   async login({ domainType = 'WINDOWS', domain, user, password } = {}) {
     await this.isRunning({ throw: true });
@@ -89,27 +97,39 @@ class NbuCli {
   }
   async policies() {
     await this.retentionLevels();
-    return cached.set('policies', () => this.#get(Policies), CACHE.policies);
+    return this.cached.set(
+      'policies',
+      () => this.#get(Policies),
+      CACHE_AGE.policies
+    );
   }
   async retentionLevels() {
-    return cached.set(
+    return this.cached.set(
       'retentionLevels',
       () => this.#get(RetentionLevels),
-      CACHE.retentionLevels
+      CACHE_AGE.retentionLevels
     );
   }
   async services() {
-    return cached.set('services', () => this.#get(Services), CACHE.services);
+    return this.cached.set(
+      'services',
+      () => this.#get(Services),
+      CACHE_AGE.services
+    );
   }
   async slps() {
     await this.retentionLevels();
-    return cached.set('slps', () => this.#get(SLPs), CACHE.slps);
+    return this.cached.set('slps', () => this.#get(SLPs), CACHE_AGE.slps);
   }
   async summary() {
-    return cached.set('summary', () => this.#get(Summary), CACHE.summary);
+    return this.cached.set(
+      'summary',
+      () => this.#get(Summary),
+      CACHE_AGE.summary
+    );
   }
   async whoami() {
-    return cached.set('whoami', () => this.#get(Whoami), CACHE.whoami);
+    return this.cached.set('whoami', () => this.#get(Whoami), CACHE_AGE.whoami);
   }
 }
 

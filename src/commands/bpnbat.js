@@ -34,7 +34,10 @@ module.exports.Whoami = {
     method: { type: 'string', regExp: /Authentication method: (.+)/ },
   },
   begin: () => (Logins.length = 0),
-  split: (text, split) => (text.match(/^\w+/) ? split(text) : false),
+  split: (text, split) => {
+    if (text.match(/Failed to get logged in user details/)) return false;
+    return text.match(/^\w+/) ? split(text) : false;
+  },
   assign: (values, assign) => {
     const row = assign(values.filter((v) => v.match(/\w/)));
     Logins.push(row);
