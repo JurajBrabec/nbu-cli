@@ -4,7 +4,13 @@ const {
   ScheduleTypes,
   RetentionLevels,
 } = require('../maps');
-const { secondsToText, secondsToTime, value } = require('../helpers');
+const {
+  secondsToText,
+  secondsToTime,
+  value,
+  getCalDates,
+  getCalDayOfWeek,
+} = require('../helpers');
 
 const split = (text) => {
   const ARRAY_ITEMS = ['CLASS', 'INFO', 'RES', 'POOL', 'FOE'];
@@ -24,9 +30,10 @@ const split = (text) => {
   const CLIENTS = ['CLIENT'];
   const SCHEDULES = [
     'SCHED',
-    'SCHEDCALDATES',
+    'SCHEDCALIDATES',
     'SCHEDCALENDAR',
     'SCHEDCALDAYOWEEK',
+    'SCHEDCALEDAYOWEEK',
     'SCHEDWIN',
     'SCHEDRES',
     'SCHEDPOOL',
@@ -126,9 +133,10 @@ const assign = (values) => {
   policy.schedules = values.SCHED.map((schedule) =>
     assignValuesToFields(exports.Policies.fields.schedule, [
       ...schedule.SCHED,
-      schedule.SCHEDCALDATES[0],
+      schedule.SCHEDCALIDATES.join(','),
       schedule.SCHEDCALENDAR[0],
       schedule.SCHEDCALDAYOWEEK[0],
+      schedule.SCHEDCALEDAYOWEEK[0],
       ...schedule.SCHEDWIN,
       schedule.SCHEDRES[0],
       schedule.SCHEDPOOL[0],
@@ -161,6 +169,9 @@ const assign = (values) => {
         win_fri_duration: secondsToText(schedule.win_fri_duration),
         win_sat_start: secondsToTime(schedule.win_sat_start),
         win_sat_duration: secondsToText(schedule.win_sat_duration),
+        calDates: getCalDates(schedule.calDates),
+        calDayOfWeek: getCalDayOfWeek(schedule.calDayOfWeek),
+        calEDayOfWeek: getCalDayOfWeek(schedule.calEDayOfWeek),
       })
   );
   return policy;
@@ -268,6 +279,7 @@ module.exports.Policies = {
       calDates: 'string',
       calRetries: 'string',
       calDayOfWeek: 'string',
+      calEDayOfWeek: 'string',
       win_sun_start: 'number',
       win_sun_duration: 'number',
       win_mon_start: 'number',

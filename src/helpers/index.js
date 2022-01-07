@@ -1,6 +1,8 @@
 const {
   NBUDateTime,
   ISODateTime,
+  getCalDates,
+  getCalDayOfWeek,
   secondsToTime,
   secondsToText,
 } = require('./dateTime');
@@ -10,6 +12,8 @@ const { login, isLoggedIn, isRunning } = require('./system');
 module.exports = {
   NBUDateTime,
   ISODateTime,
+  getCalDates,
+  getCalDayOfWeek,
   secondsToTime,
   secondsToText,
   login,

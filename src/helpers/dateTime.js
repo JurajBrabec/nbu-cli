@@ -1,5 +1,41 @@
 const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
+const Days = new Map([
+  [1, 'Sunday'],
+  [2, 'Monday'],
+  [3, 'Tuesday'],
+  [4, 'Wednesday'],
+  [5, 'Thursday'],
+  [6, 'Friday'],
+  [7, 'Saturday'],
+]);
+const Weeks = new Map([
+  [1, 'first'],
+  [2, 'second'],
+  [3, 'third'],
+  [4, 'fourth'],
+  [5, 'last'],
+]);
+
+module.exports.getCalDates = (calDates) => {
+  if (typeof calDates !== 'string') return null;
+  return calDates
+    .split(',')
+    .map((d) => exports.ISODateTime(d * 1000))
+    .join(',');
+};
+
+module.exports.getCalDayOfWeek = (calDayOfWeek) => {
+  if (typeof calDayOfWeek !== 'string') return null;
+  return calDayOfWeek
+    .split(';')
+    .map((d) => {
+      const [day, week] = d.split(',');
+      return `${Days.get(+day)} of ${Weeks.get(+week)} week`;
+    })
+    .join(',');
+};
+
 module.exports.NBUDateTime = (
   value = Date.now(),
   locale = 'en-US',
