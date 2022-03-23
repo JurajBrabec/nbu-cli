@@ -33,7 +33,7 @@ module.exports.isLoggedIn = ({ domain, user, type = 'AT' } = {}) =>
       login.name.toLowerCase() === user.toLowerCase()
   );
 
-module.exports.isRunning = (params) => {
+module.exports.isRunning = (params = {}) => {
   const started = REQUIRED_SERVICES.every((service) => Services.has(service));
   if (!started && params.throw)
     throw new Error(
