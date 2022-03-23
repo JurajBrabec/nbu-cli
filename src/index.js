@@ -32,10 +32,11 @@ const CACHE_AGE = {
 let NBUCLI;
 
 class NbuCli {
-  constructor({ bin = './' } = {}) {
+  constructor({ bin = './', age = CACHE_AGE } = {}) {
     this.bin = bin;
     this.masterServer = null;
     this.cached = Cached.depot('NbuCli');
+    this.age = age;
   }
   async #get(command, params = {}) {
     command.cast = value.cast;
@@ -57,7 +58,7 @@ class NbuCli {
     return this.cached.set(
       'clients',
       () => this.#get(Clients),
-      CACHE_AGE.clients
+      this.age.clients
     );
   }
   async config({ client } = {}) {
@@ -65,7 +66,7 @@ class NbuCli {
     return this.cached.set(
       'config',
       () => this.#get(ClientConfig, { args }),
-      CACHE_AGE.config
+      this.age.config
     );
   }
   async isLoggedIn({ domain, user, type }) {
@@ -83,7 +84,7 @@ class NbuCli {
     return this.cached.set(
       'jobs',
       () => this.#get(Jobs, { args }),
-      CACHE_AGE.jobs
+      this.age.jobs
     );
   }
   async login({ domainType = 'WINDOWS', domain, user, password } = {}) {
@@ -100,36 +101,36 @@ class NbuCli {
     return this.cached.set(
       'policies',
       () => this.#get(Policies),
-      CACHE_AGE.policies
+      this.age.policies
     );
   }
   async retentionLevels() {
     return this.cached.set(
       'retentionLevels',
       () => this.#get(RetentionLevels),
-      CACHE_AGE.retentionLevels
+      this.age.retentionLevels
     );
   }
   async services() {
     return this.cached.set(
       'services',
       () => this.#get(Services),
-      CACHE_AGE.services
+      this.age.services
     );
   }
   async slps() {
     await this.retentionLevels();
-    return this.cached.set('slps', () => this.#get(SLPs), CACHE_AGE.slps);
+    return this.cached.set('slps', () => this.#get(SLPs), this.age.slps);
   }
   async summary() {
     return this.cached.set(
       'summary',
       () => this.#get(Summary),
-      CACHE_AGE.summary
+      this.age.summary
     );
   }
   async whoami() {
-    return this.cached.set('whoami', () => this.#get(Whoami), CACHE_AGE.whoami);
+    return this.cached.set('whoami', () => this.#get(Whoami), this.age.whoami);
   }
 }
 
