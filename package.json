@@ -1,6 +1,6 @@
 {
   "name": "nbu-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "NetBackup CLI Interface",
   "main": "src/index.js",
   "scripts": {
