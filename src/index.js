@@ -32,11 +32,11 @@ const CACHE_AGE = {
 let NBUCLI;
 
 class NbuCli {
-  constructor({ bin = './', age = CACHE_AGE } = {}) {
+  constructor({ bin = './', age = {} } = {}) {
     this.bin = bin;
     this.masterServer = null;
     this.cached = Cached.depot('NbuCli');
-    this.age = age;
+    this.age = { ...CACHE_AGE, ...age };
   }
   async #get(command, params = {}) {
     command.cast = value.cast;
@@ -134,13 +134,14 @@ class NbuCli {
   }
 }
 
-module.exports = async ({ bin, credentials } = {}) => {
+module.exports = async ({ bin, credentials, age } = {}) => {
   if (!NBUCLI) {
-    NBUCLI = new NbuCli({ bin });
-    if (credentials) await NBUCLI.login(credentials);
-    const [{ masterServer }] = await NBUCLI.summary();
+    const nbu = new NbuCli({ bin, age });
+    if (credentials) await nbu.login(credentials);
+    const [{ masterServer }] = await nbu.summary();
     if (!masterServer) throw new Error(`Unable to read NBU CLI in ${bin}`);
-    NBUCLI.masterServer = masterServer;
+    nbu.masterServer = masterServer;
+    NBUCLI = nbu;
   }
   return NBUCLI;
 };
