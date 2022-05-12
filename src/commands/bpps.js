@@ -3,6 +3,7 @@ const { Services } = require('../maps');
 module.exports.Services = {
   bin: 'bpps',
   args: ['-S', '-i', 'NB_SERVER_SERVICES'],
+  options: { timeout: 5000 },
   separator: /\s+/,
   fields: {
     name: 'string',

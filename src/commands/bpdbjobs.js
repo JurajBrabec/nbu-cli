@@ -4,6 +4,7 @@ const { value } = require('../helpers');
 module.exports.Summary = {
   bin: 'admincmd/bpdbjobs',
   args: ['-summary', '-l'],
+  options: { timeout: 5000 },
   delimiter: /(\r?\n){2}/,
   separator: /\r?\n/,
   fields: {

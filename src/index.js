@@ -139,7 +139,7 @@ module.exports = async ({ bin, credentials, age } = {}) => {
     const nbu = new NbuCli({ bin, age });
     if (credentials) await nbu.login(credentials);
     const [{ masterServer }] = await nbu.summary();
-    if (!masterServer) throw new Error(`Unable to read NBU CLI in ${bin}`);
+    if (!masterServer) throw new Error(`Unable to read NBU CLI in '${bin}'.`);
     nbu.masterServer = masterServer;
     NBUCLI = nbu;
   }
