@@ -1,6 +1,6 @@
 {
   "name": "nbu-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "NetBackup CLI Interface",
   "main": "src/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "homepage": "https://github.com/JurajBrabec/nbu-cli",
   "license": "ISC",
   "devDependencies": {
-    "esbuild": "^0.14.23",
-    "jest": "^27.3.1"
+    "esbuild": "^0.14.38",
+    "jest": "^28.1.0"
   }
 }
