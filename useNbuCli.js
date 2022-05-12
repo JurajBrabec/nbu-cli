@@ -1,10 +1,12 @@
 const NBU = require('./src');
 
 const credentials = { domain: 'SEC', user: 'jbrabec', password: '*' };
+
 async function main() {
   try {
+    console.log('Login...');
     const nbu = await NBU({ bin: 'd:/veritas/netbackup/bin' });
-    console.log(nbu.masterServer);
+    console.log('Master Server:', nbu.masterServer);
     let result;
     result = await nbu.config();
     console.log('Config', result);
@@ -34,7 +36,7 @@ async function main() {
     result = await nbu.logout();
     console.log('logout:', result);
   } catch (error) {
-    console.error(error);
+    console.error('Error:', error);
   }
 }
 

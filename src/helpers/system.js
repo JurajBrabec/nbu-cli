@@ -4,7 +4,8 @@ const path = require('path');
 const { Logins, Services } = require('../maps');
 
 const LOGIN_FILE = 'info.tmp';
-const REQUIRED_SERVICES = ['nbpem'];
+const MASTER_REQUIRED_SERVICES = ['nbpem'];
+const MEDIA_REQUIRED_SERVICES = ['nbrmms'];
 
 module.exports.login = async ({
   domainType = 'WINDOWS',
@@ -34,10 +35,14 @@ module.exports.isLoggedIn = ({ domain, user, type = 'AT' } = {}) =>
   );
 
 module.exports.isRunning = (params = {}) => {
-  const started = REQUIRED_SERVICES.every((service) => Services.has(service));
+  const started =
+    MASTER_REQUIRED_SERVICES.every((service) => Services.has(service)) ||
+    MEDIA_REQUIRED_SERVICES.every((service) => Services.has(service));
   if (!started && params.throw)
     throw new Error(
-      `NBU is down (${REQUIRED_SERVICES.join(', ')} not running).`
+      `NBU is down (${MASTER_REQUIRED_SERVICES.join(
+        ', '
+      )} or ${MEDIA_REQUIRED_SERVICES.join(', ')} not running).`
     );
   return started;
 };
