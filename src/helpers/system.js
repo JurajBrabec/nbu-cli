@@ -1,6 +1,7 @@
 const { unlink, writeFile } = require('fs').promises;
 const { tmpdir } = require('os');
 const path = require('path');
+const { platform } = require('process');
 const { Logins, Services } = require('../maps');
 
 const LOGIN_FILE = 'info.tmp';
@@ -45,4 +46,13 @@ module.exports.isRunning = (params = {}) => {
       )} or ${MEDIA_REQUIRED_SERVICES.join(', ')} not running).`
     );
   return started;
+};
+
+module.exports.platformSpecific = (params, osParams) => {
+  if (!osParams[platform])
+    throw new Error(`Platform ${platform} not supported.`);
+  return {
+    ...params,
+    ...osParams[platform],
+  };
 };
