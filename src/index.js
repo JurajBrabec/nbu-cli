@@ -16,6 +16,11 @@ const { RetentionLevels } = require('./commands/bpretlevel.js');
 const { SLPs } = require('./commands/nbstl.js');
 const { Services } = require('./commands/bpps.js');
 const { ClientConfig } = require('./commands/bpgetconfig.js');
+const {
+  ClientStatus,
+  ClientOffline,
+  ClientOnline,
+} = require('./commands/bpclient.js');
 
 const CACHE_AGE = {
   clients: 1000 * 60 * 1,
@@ -53,6 +58,20 @@ class NbuCli {
       parser,
     });
     return execute(params.args).asArray();
+  }
+  async clientStatus({ client }) {
+    const args = [client];
+    return this.#get(ClientStatus, { args });
+  }
+  async clientOffline({ client }) {
+    const args = [client];
+    await this.#get(ClientOffline, { args });
+    return this.clientStatus({ client });
+  }
+  async clientOnline({ client }) {
+    const args = [client];
+    await this.#get(ClientOnline, { args });
+    return this.clientStatus({ client });
   }
   async clients() {
     return this.cached.set(

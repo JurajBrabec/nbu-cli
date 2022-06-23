@@ -10,6 +10,8 @@ async function main() {
     let result;
     result = await nbu.config();
     console.log('Config', result);
+    result = await nbu.clientStatus({ client: 'localhost' });
+    console.log('Client status', result);
     result = await nbu.clients();
     console.log('Client 1 /', result.length, result[0]);
     result = await nbu.jobs();
