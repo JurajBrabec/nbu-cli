@@ -4,18 +4,21 @@ module.exports.ClientStatus = {
   delimiter: /\r?\n{2}/,
   separator: /\r?\n{2}/,
   fields: {
-    offlineBackup: { type: 'string', regExp: /Offline for backup: +(\w+)/ },
-    offlineRestore: { type: 'number', regExp: /Offline for restore: +(\w+)/ },
+    name: { type: 'string', regExp: /^Client Name: (\S+)/ },
+    offlineBackup: { type: 'string', regExp: /Offline for backup:\s+(\w+)/ },
+    offlineRestore: { type: 'number', regExp: /Offline for restore:\s+(\w+)/ },
   },
   assign: (values, assign) => {
-    const row = assign([]);
-    const matcher = (field) => {
-      const match = values
-        .join('')
-        .match(exports.ClientStatus.fields[field].regExp);
-      if (match) row[field] = match[1] === 'Yes';
-    };
-    Object.keys(row).forEach((key) => matcher(key));
+    const row = assign(values);
+    if (!row.name) return {};
+    const text = values.join('');
+    Object.keys(row)
+      .filter((key) => /offline/.test(key))
+      .forEach((key) => {
+        const { regExp } = exports.ClientStatus.fields[key];
+        const match = text.match(regExp);
+        if (match) row[key] = match[1] === 'Yes';
+      });
     return row;
   },
 };
