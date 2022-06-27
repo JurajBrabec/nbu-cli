@@ -24,6 +24,7 @@ const {
 
 const CACHE_AGE = {
   clients: 1000 * 60 * 1,
+  config: 1000 * 60 * 60,
   jobs: 1000 * 1,
   policies: 1000 * 60 * 1,
   retentionLevels: 1000 * 60 * 1,
@@ -81,9 +82,10 @@ class NbuCli {
     );
   }
   async config({ client } = {}) {
-    const args = [client || this.masterServer];
+    const host = client || this.masterServer;
+    const args = [host];
     return this.cached.set(
-      'config',
+      `config-${host}`,
       () => this.#get(ClientConfig, { args }),
       this.age.config
     );
@@ -101,7 +103,7 @@ class NbuCli {
     const args = [];
     if (daysBack) args.push('-t', NBUDateTime(-daysBack * 24 * 60 * 60 * 1000));
     return this.cached.set(
-      'jobs',
+      `jobs-${daysBack || 'all'}`,
       () => this.#get(Jobs, { args }),
       this.age.jobs
     );
