@@ -10,8 +10,12 @@ const {
 } = require('./helpers');
 const { Login, Logout, Whoami } = require('./commands/bpnbat.js');
 const { Summary, Jobs } = require('./commands/bpdbjobs.js');
-const { Clients } = require('./commands/bpplclients.js');
+const {
+  Clients,
+  ClientRemoveFromPolicy,
+} = require('./commands/bpplclients.js');
 const { Policies } = require('./commands/bppllist.js');
+const { PolicyRemove } = require('./commands/bppldelete.js');
 const { RetentionLevels } = require('./commands/bpretlevel.js');
 const { SLPs } = require('./commands/nbstl.js');
 const { Services } = require('./commands/bpps.js');
@@ -74,21 +78,32 @@ class NbuCli {
     await this.#get(ClientOnline, { args });
     return this.clientStatus({ client });
   }
-  async clients() {
+  async clients({ age } = {}) {
     return this.cached.set(
       'clients',
       () => this.#get(Clients),
-      this.age.clients
+      age || this.age.clients
     );
   }
-  async config({ client } = {}) {
+  async config({ client, age } = {}) {
     const host = client || this.masterServer;
     const args = [host];
     return this.cached.set(
       `config-${host}`,
       () => this.#get(ClientConfig, { args }),
-      this.age.config
+      age || this.age.config
     );
+  }
+  async clientRemoveFromPolicy({ client, policy } = {}) {
+    await this.#get(ClientRemoveFromPolicy, {
+      args: [policy, '-delete', client],
+    });
+    const policies = await this.policies({ age: 0 });
+    const { clients } = policies.find(({ name }) => name === policy) || {};
+    if (!clients) return { error: 'Policy not found' };
+    const result = clients.find(({ name }) => name === client);
+    if (result) return { error: 'Client not removed' };
+    return { success: true };
   }
   async isLoggedIn({ domain, user, type }) {
     await this.whoami();
@@ -98,14 +113,14 @@ class NbuCli {
     await this.services();
     return isRunning(params);
   }
-  async jobs({ daysBack } = {}) {
+  async jobs({ daysBack, age } = {}) {
     await this.retentionLevels();
     const args = [];
     if (daysBack) args.push('-t', NBUDateTime(-daysBack * 24 * 60 * 60 * 1000));
     return this.cached.set(
       `jobs-${daysBack || 'all'}`,
       () => this.#get(Jobs, { args }),
-      this.age.jobs
+      age || this.age.jobs
     );
   }
   async login({ domainType = 'WINDOWS', domain, user, password } = {}) {
@@ -117,41 +132,54 @@ class NbuCli {
   async logout() {
     return this.#get(Logout);
   }
-  async policies() {
+  async policies({ age } = {}) {
     await this.retentionLevels();
     return this.cached.set(
       'policies',
       () => this.#get(Policies),
-      this.age.policies
+      age || this.age.policies
     );
   }
-  async retentionLevels() {
+  async policyRemove({ policy } = {}) {
+    await this.#get(PolicyRemove, {
+      args: [policy],
+    });
+    const policies = await this.policies({ age: 0 });
+    const result = policies.find(({ name }) => name === policy) || {};
+    if (result) return { error: 'Policy not removed' };
+    return { success: true };
+  }
+  async retentionLevels({ age } = {}) {
     return this.cached.set(
       'retentionLevels',
       () => this.#get(RetentionLevels),
-      this.age.retentionLevels
+      age || this.age.retentionLevels
     );
   }
-  async services() {
+  async services({ age } = {}) {
     return this.cached.set(
       'services',
       () => this.#get(Services),
-      this.age.services
+      age || this.age.services
     );
   }
-  async slps() {
+  async slps({ age } = {}) {
     await this.retentionLevels();
-    return this.cached.set('slps', () => this.#get(SLPs), this.age.slps);
+    return this.cached.set('slps', () => this.#get(SLPs), age || this.age.slps);
   }
-  async summary() {
+  async summary({ age } = {}) {
     return this.cached.set(
       'summary',
       () => this.#get(Summary),
-      this.age.summary
+      age || this.age.summary
     );
   }
-  async whoami() {
-    return this.cached.set('whoami', () => this.#get(Whoami), this.age.whoami);
+  async whoami({ age } = {}) {
+    return this.cached.set(
+      'whoami',
+      () => this.#get(Whoami),
+      age || this.age.whoami
+    );
   }
 }
 

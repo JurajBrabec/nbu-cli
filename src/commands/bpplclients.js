@@ -13,3 +13,9 @@ module.exports.Clients = {
   },
   assign: (values, assign) => assign(values.slice(1)),
 };
+
+module.exports.ClientRemoveFromPolicy = {
+  bin: 'admincmd/bpplclients',
+  args: [],
+  fields: {},
+};
