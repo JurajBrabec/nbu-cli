@@ -99,15 +99,23 @@ class NbuCli {
       args: [policy, '-delete', client],
     });
     const policies = await this.policies({ age: 0 });
+    const result = {};
     const clientPolicies = policies.filter(({ clients }) =>
       clients.find(({ name }) => name === client)
     );
-    const remaining = clientPolicies.length;
+    result.policies = clientPolicies.length;
     const { clients } = policies.find(({ name }) => name === policy) || {};
-    if (!clients) return { error: 'Policy not found', remaining };
-    const result = clients.find(({ name }) => name === client);
-    if (result) return { error: 'Client not removed', remaining };
-    return { success: true, remaining };
+    if (!clients) {
+      result.error = 'Policy not found';
+      return result;
+    }
+    result.clients = clients.length;
+    if (clients.find(({ name }) => name === client)) {
+      result.error = 'Client not removed';
+      return result;
+    }
+    result.success = true;
+    return result;
   }
   async isLoggedIn({ domain, user, type }) {
     await this.whoami();
