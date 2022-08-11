@@ -98,7 +98,7 @@ class NbuCli {
     await this.#get(ClientRemoveFromPolicy, {
       args: [policy, '-delete', client],
     });
-    const policies = await this.policies({ age: 0 });
+    const policies = await this.policies({ age: -1 });
     const result = {};
     const clientPolicies = policies.filter(({ clients }) =>
       clients.find(({ name }) => name === client)
@@ -156,8 +156,8 @@ class NbuCli {
     await this.#get(PolicyRemove, {
       args: [policy],
     });
-    const policies = await this.policies({ age: 0 });
-    const result = policies.find(({ name }) => name === policy) || {};
+    const policies = await this.policies({ age: -1 });
+    const result = policies.find(({ name }) => name === policy);
     if (result) return { error: 'Policy not removed' };
     return { success: true };
   }
